@@ -8,7 +8,7 @@ import ShopPage from "./pages/shop/shop.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import Header from "./components/header/header.component";
 
-import { auth } from "./firebase/firebase.utils";
+import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 
 //convert to class component because we whant to contain state
 class App extends React.Component {
@@ -24,12 +24,31 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+    console.log("App componentDidMount");
     // when Auth state Change if refrash it will also return same user until you sign out
     // ⭐ A Observable can have three different states as well : Subscribed, Error, Completed.
-    this.unsubscribeFromAuth = auth.onAuthStateChanged((user) => {
-      this.setState({ currentUser: user }, () => {
-        console.log(this.state.currentUser);
-      });
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+      if (userAuth) {
+        //createUserProfileDocument return documentReference
+        const UserRef = await createUserProfileDocument(userAuth);
+
+        UserRef.onSnapshot((snapShot) => {
+          this.setState(
+            {
+              currentUser: {
+                id: snapShot.id,
+                ...snapShot.data(),
+              },
+            },
+            () => {
+              console.log(this.state);
+            }
+          );
+        });
+      } else {
+        // if there is not thing in userAuth
+        this.setState({ currentUser: userAuth });
+      }
     });
   }
 

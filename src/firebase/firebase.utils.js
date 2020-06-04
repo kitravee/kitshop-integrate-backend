@@ -17,6 +17,43 @@ const firebaseConfig = {
   measurementId: "G-VFXKJ14CL2",
 };
 
+// async function get  parameter
+// userAuth from
+// additional
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  // if no user Auth exit function
+  if (!userAuth) return;
+  // from fire store there is 2 way to query 1 queryReference 2 querySnapshot; return object reference and snapshot reference (to detect is there data ?); ether Document or Collection
+
+  // in order for us to create we use documentReference
+  // to create, retrive, update, delete
+
+  // snap shot represent the data
+  // .get give us snapshotobject re
+  // documentRef.get() or collectionRef.get()
+  // other CRUD .set()  .get()  .update()  .delete()
+
+  const userRef = firestore.doc(`users/${userAuth.uid}`); //document reference
+  const snapshot = await userRef.get();
+
+  // exists to check weather or not  that data exist in database
+  if (!snapshot.exists) {
+    const { displayName, email } = userAuth;
+    const createAt = new Date();
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createAt,
+        ...additionalData,
+      });
+    } catch (error) {
+      console.log("error create user", error.message);
+    }
+  }
+  return userRef;
+};
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -25,6 +62,11 @@ export const auth = firebase.auth();
 
 // fire store for firebase
 export const firestore = firebase.firestore();
+
+// USE CASE EXAMPLE for firestore (DB)
+// firestore.collection("user").doc("SADQWDASDXCZXC").collection("cartItem");
+// firestore.doc("/user/SADQWDASDXCZXC");
+// firestore.collection("/user/SADQWDASDXCZXC/cartItem");
 
 firebase.auth().useDeviceLanguage();
 
