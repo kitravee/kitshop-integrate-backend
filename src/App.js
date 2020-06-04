@@ -24,7 +24,6 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    console.log("App componentDidMount");
     // when Auth state Change if refrash it will also return same user until you sign out
     // ⭐ A Observable can have three different states as well : Subscribed, Error, Completed.
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
@@ -33,17 +32,12 @@ class App extends React.Component {
         const UserRef = await createUserProfileDocument(userAuth);
 
         UserRef.onSnapshot((snapShot) => {
-          this.setState(
-            {
-              currentUser: {
-                id: snapShot.id,
-                ...snapShot.data(),
-              },
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data(),
             },
-            () => {
-              console.log(this.state);
-            }
-          );
+          });
         });
       } else {
         // if there is not thing in userAuth
@@ -54,6 +48,7 @@ class App extends React.Component {
 
   componentWillUnmount() {
     // #86 to unsubscribe/close auth
+
     this.unsubscribeFromAuth();
   }
 
