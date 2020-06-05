@@ -1,5 +1,6 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
+import { connect } from "react-redux";
 
 import "./App.css";
 
@@ -10,20 +11,24 @@ import Header from "./components/header/header.component";
 
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 
+import { setCurrentUser } from "./redux/user/user.actions";
+
 //convert to class component because we whant to contain state
 class App extends React.Component {
-  constructor() {
-    super();
-    //user that loging in
-    this.state = {
-      currentUser: null,
-    };
-  }
+  // constructor() {
+  //   super();
+  //   //user that loging in
+  //   //comment out because of intregrad
+  //   this.state = {
+  //     currentUser: null,
+  //   };
+  // }
 
   //create method equal to null
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+    const { setCurrentUser } = this.props;
     // when Auth state Change if refrash it will also return same user until you sign out
     // ⭐ A Observable can have three different states as well : Subscribed, Error, Completed.
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
@@ -32,16 +37,14 @@ class App extends React.Component {
         const UserRef = await createUserProfileDocument(userAuth);
 
         UserRef.onSnapshot((snapShot) => {
-          this.setState({
-            currentUser: {
-              id: snapShot.id,
-              ...snapShot.data(),
-            },
+          setCurrentUser({
+            id: snapShot.id,
+            ...snapShot.data(),
           });
         });
       } else {
         // if there is not thing in userAuth
-        this.setState({ currentUser: userAuth });
+        setCurrentUser(userAuth);
       }
     });
   }
@@ -55,7 +58,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
@@ -65,5 +68,12 @@ class App extends React.Component {
     );
   }
 }
+// dispatch is way for redux to know that whatever object you're passing me. it going to be an action object that I'm going to pass to every reducer
+//
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+});
 
-export default App;
+// App.js only set currentUser that we will use mapDispatchToProps
+
+export default connect(null, mapDispatchToProps)(App);

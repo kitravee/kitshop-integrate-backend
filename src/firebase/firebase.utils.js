@@ -17,9 +17,7 @@ const firebaseConfig = {
   measurementId: "G-VFXKJ14CL2",
 };
 
-// async function get  parameter
-// userAuth from
-// additional
+// async function get parameter
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   // if no user Auth exit function
   if (!userAuth) return;
@@ -29,14 +27,14 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   // to create, retrive, update, delete
 
   // snap shot represent the data
-  // .get give us snapshotobject re
+  // .get give us snapshotobject
   // documentRef.get() or collectionRef.get()
   // other CRUD .set()  .get()  .update()  .delete()
 
   const userRef = firestore.doc(`users/${userAuth.uid}`); //document reference
   const snapshot = await userRef.get();
 
-  // exists to check weather or not  that data exist in database
+  // exists to check weather or not that data exist in database
   if (!snapshot.exists) {
     const { displayName, email } = userAuth;
     const createAt = new Date();

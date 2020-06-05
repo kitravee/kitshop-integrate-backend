@@ -1,5 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+// 5) connect
+//connect HOC let you to accecss to thing to redux
+import { connect } from "react-redux";
 
 import { auth } from "../../firebase/firebase.utils";
 
@@ -33,4 +36,10 @@ const Header = ({ currentUser }) => (
   </div>
 );
 
-export default Header;
+// mapStatetoProps and connent we will use everywhere we need property from our root reducer
+// state parameter is top level root reducer
+const mapStateToProps = (state) => ({
+  currentUser: state.user.currentUser,
+});
+/// first argument -> pass function that allow us to access root reducer
+export default connect(mapStateToProps)(Header);
