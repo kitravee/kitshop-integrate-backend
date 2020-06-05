@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import "./App.css";
@@ -54,7 +54,8 @@ class App extends React.Component {
 
     this.unsubscribeFromAuth();
   }
-
+  // Route render for ()=>() inline function
+  // component for component
   render() {
     return (
       <div>
@@ -62,18 +63,32 @@ class App extends React.Component {
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
-          <Route path="/signin" component={SignInAndSignUpPage} />
+          <Route
+            path="/signin"
+            render={() =>
+              this.props.currentUser ? (
+                <Redirect to="/" />
+              ) : (
+                <SignInAndSignUpPage />
+              )
+            }
+          />
         </Switch>
       </div>
     );
   }
 }
+
+// to check CurrentUser for redirect to "/"
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser,
+});
+
 // dispatch is way for redux to know that whatever object you're passing me. it going to be an action object that I'm going to pass to every reducer
-//
 const mapDispatchToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
 
 // App.js only set currentUser that we will use mapDispatchToProps
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
