@@ -6,11 +6,16 @@ import { connect } from "react-redux";
 
 import { auth } from "../../firebase/firebase.utils";
 
+import CartIcon from "../cart-icon/cart-icon.component";
+
+import CartDropDown from "../cart-dropdown/cart-dropdown.component";
+
 import { ReactComponent as Logo } from "../../assets/crown.svg";
 
 import "./header.styles.scss";
 
-const Header = ({ currentUser }) => (
+//currentUser get from store
+const Header = ({ currentUser, hidden }) => (
   <div className="header">
     <Link className="logo-container" to="/">
       <Logo className="logo" />
@@ -32,14 +37,18 @@ const Header = ({ currentUser }) => (
           SIGN IN
         </Link>
       )}
+      <CartIcon />
     </div>
+    {hidden ? null : <CartDropDown />}
   </div>
 );
 
 // mapStatetoProps and connent we will use everywhere we need property from our root reducer
 // state parameter is top level root reducer
-const mapStateToProps = (state) => ({
-  currentUser: state.user.currentUser,
+// ⭐ new destructure syntax
+const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
+  currentUser,
+  hidden,
 });
 /// first argument -> pass function that allow us to access root reducer
 export default connect(mapStateToProps)(Header);

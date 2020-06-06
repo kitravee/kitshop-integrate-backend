@@ -4,9 +4,17 @@ import "./custom-buttom.styles.scss";
 
 // property isGoogleSignIn if it pass to props it is "true" then render "google-sign-in"
 
-const CustomButton = ({ children, isGoogleSignIn, ...otherProps }) => (
+// Add inverted button
+const CustomButton = ({
+  children,
+  inverted,
+  isGoogleSignIn,
+  ...otherProps
+}) => (
   <button
-    className={`${isGoogleSignIn ? "google-sign-in" : ""}  custom-button`}
+    className={`${inverted ? "inverted" : ""} ${
+      isGoogleSignIn ? "google-sign-in" : ""
+    }  custom-button`}
     {...otherProps}
   >
     {children}

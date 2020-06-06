@@ -11,4 +11,4 @@ const middlewares = [logger];
 const store = createStore(rootReducer, applyMiddleware(...middlewares));
 
 export default store;
-// we will inport in App.js to pass the store context into Provider
+// we will inport in index.js to pass the store context into Provider
