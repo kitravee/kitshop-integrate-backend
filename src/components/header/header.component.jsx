@@ -12,6 +12,12 @@ import CartDropDown from "../cart-dropdown/cart-dropdown.component";
 
 import { ReactComponent as Logo } from "../../assets/crown.svg";
 
+import { selectCurrentUser } from "../../redux/user/user.selectors";
+
+import { selectCartHidden } from "../../redux/cart/cart.selectors";
+
+import { createStructuredSelector } from "reselect";
+
 import "./header.styles.scss";
 
 //currentUser get from store
@@ -45,10 +51,11 @@ const Header = ({ currentUser, hidden }) => (
 
 // mapStatetoProps and connent we will use everywhere we need property from our root reducer
 // state parameter is top level root reducer
-// ⭐ new destructure syntax
-const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
-  currentUser,
-  hidden,
+// ⭐ new destructure syntax {x : {y}}
+//createStructuredSelector user for auto pass state to each selector (do not have to selectCurrentUser(state))
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+  hidden: selectCartHidden,
 });
 /// first argument -> pass function that allow us to access root reducer
 export default connect(mapStateToProps)(Header);
