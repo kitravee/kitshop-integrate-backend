@@ -4,13 +4,28 @@
 // combineReducers between root and other individual
 import { combineReducers } from "redux";
 
+// install local or session storage
+import { persistReducer } from "redux-persist";
+
+//what local storage
+import storage from "redux-persist/lib/storage";
+//can also import session
+
 import userReducer from "./user/user.reducer";
 import cartReducer from "./cart/cart.reducer";
 
-export default combineReducers({
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["cart"],
+};
+
+const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer,
 });
+
+export default persistReducer(persistConfig, rootReducer);
 
 // 4) we will bring rootReducer to store (Create store)
 // 5) Create action
