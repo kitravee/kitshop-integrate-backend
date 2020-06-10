@@ -1,25 +1,21 @@
 import { createSelector } from "reselect";
 
-// param is string but id is inteteger so we create collection ID MAP
-
-const COLLECTION_ID_MAP = {
-  hats: 1,
-  sneakers: 2,
-  jackets: 3,
-  womens: 4,
-  mens: 5,
-};
-
 const selectShop = (state) => state.shop;
 
-export const selectCollection = createSelector(
+export const selectCollections = createSelector(
   [selectShop],
   (shop) => shop.collections,
 );
 
-export const selecCollection = (collectionUrlParam) =>
-  createSelector([selectCollection], (collections) =>
-    collections.find(
-      (collection) => collection.id === COLLECTION_ID_MAP[collectionUrlParam],
-    ),
+// Now collection overview not work because we do Data normalization, so we will convert Obj -> Arr
+export const selectCollectionForPreview = createSelector(
+  [selectCollections],
+  (collections) => Object.keys(collections).map((key) => collections[key]),
+);
+
+// Data normalization [] => {}
+export const selectCollection = (collectionUrlParam) =>
+  createSelector(
+    [selectCollections],
+    (collections) => collections[collectionUrlParam],
   );

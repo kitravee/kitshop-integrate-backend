@@ -7,11 +7,19 @@ import { selectCollection } from "../../redux/shop/shop.selectors";
 
 import "./collection.styles.scss";
 
-const CollectionPage = ({ collection }) => (
-  <div className="category">
-    <h2>Cat</h2>
-  </div>
-);
+const CollectionPage = ({ collection }) => {
+  const { title, items } = collection;
+  return (
+    <div className="collection-page">
+      <h2 className="title">{title}</h2>
+      <div className="items">
+        {items.map((item) => (
+          <CollectionItem key={item.id} item={item} />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 // state is over all reducer state
 // second call ownProps that is props of the component that we're wrapping in connect (CollectionPage Component)
