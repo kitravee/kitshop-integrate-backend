@@ -75,4 +75,22 @@ provider.setCustomParameters({ prompt: "select_account" });
 
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
+export const convertCollectionsSnapshotToMap = (collections) => {
+  const transformedCollection = collections.docs.map((doc) => {
+    const { title, items } = doc.data();
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items,
+    };
+  });
+
+  // convert to object
+  return transformedCollection.reduce((acc, collection) => {
+    acc[collection.title] = collection;
+    return acc;
+  }, {});
+};
+
 export default firebase;
