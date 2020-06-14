@@ -85,10 +85,10 @@ export const convertCollectionsSnapshotToMap = (collections) => {
       items,
     };
   });
-
+  console.log(transformedCollection);
   // convert to object
   return transformedCollection.reduce((acc, collection) => {
-    acc[collection.title] = collection;
+    acc[collection.title.toLowerCase()] = collection;
     return acc;
   }, {});
 };

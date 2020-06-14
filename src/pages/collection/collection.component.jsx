@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-
 import CollectionItem from "../../components/collection-item/collection-item.component";
 
 import { selectCollection } from "../../redux/shop/shop.selectors";
@@ -21,10 +20,11 @@ const CollectionPage = ({ collection }) => {
   );
 };
 
-// state is over all reducer state
-// second call ownProps that is props of the component that we're wrapping in connect (CollectionPage Component)
 const mapStateToProps = (state, ownProps) => ({
   collection: selectCollection(ownProps.match.params.collectionId)(state),
 });
 
 export default connect(mapStateToProps)(CollectionPage);
+
+// state is over all reducer state
+// second call ownProps that is props of the component that we're wrapping in connect (CollectionPage Component)
