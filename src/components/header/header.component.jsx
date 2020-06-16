@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 //connect HOC let you to accecss to thing to redux
 import { connect } from "react-redux";
 
-import { auth } from "../../firebase/firebase.utils";
-
 import CartIcon from "../cart-icon/cart-icon.component";
 
 import CartDropDown from "../cart-dropdown/cart-dropdown.component";
@@ -16,12 +14,14 @@ import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 import { selectCartHidden } from "../../redux/cart/cart.selectors";
 
+import { signOutStart } from "../../redux/user/user.actions.js";
+
 import { createStructuredSelector } from "reselect";
 
 import "./header.styles.scss";
 
 //currentUser get from store
-const Header = ({ currentUser, hidden }) => (
+const Header = ({ currentUser, hidden, signOutStart }) => (
   <div className="header">
     <Link className="logo-container" to="/">
       <Logo className="logo" />
@@ -35,7 +35,7 @@ const Header = ({ currentUser, hidden }) => (
       </Link>
 
       {currentUser ? (
-        <div className="option" onClick={() => auth.signOut()}>
+        <div className="option" onClick={signOutStart}>
           SIGN OUT
         </div>
       ) : (
@@ -57,5 +57,9 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
   hidden: selectCartHidden,
 });
+
+const mapDispatchToProps = (dispatch) => ({
+  signOutStart: () => dispatch(signOutStart()),
+});
 /// first argument -> pass function that allow us to access root reducer
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

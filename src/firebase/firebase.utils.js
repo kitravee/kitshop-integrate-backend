@@ -55,6 +55,15 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+      unsubscribe();
+      resolve(userAuth);
+    }, reject);
+  });
+};
+
 // everything that relate to auth
 export const auth = firebase.auth();
 
@@ -68,12 +77,12 @@ export const firestore = firebase.firestore();
 
 firebase.auth().useDeviceLanguage();
 
-const provider = new firebase.auth.GoogleAuthProvider();
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 // The authorization server prompts the user to select a user account.
-provider.setCustomParameters({ prompt: "select_account" });
+googleProvider.setCustomParameters({ prompt: "select_account" });
 
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export const convertCollectionsSnapshotToMap = (collections) => {
   const transformedCollection = collections.docs.map((doc) => {

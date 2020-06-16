@@ -10,10 +10,9 @@ import CheckoutPage from "./pages/checkout/checkout.component";
 
 import Header from "./components/header/header.component";
 
-import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
-
-import { setCurrentUser } from "./redux/user/user.actions";
+// import { setCurrentUser } from "./redux/user/user.actions";
 import { selectCurrentUser } from "./redux/user/user.selectors";
+import { checkUserSession } from "./redux/user/user.actions";
 import { createStructuredSelector } from "reselect";
 import "./App.css";
 
@@ -32,26 +31,29 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const { setCurrentUser } = this.props;
-    // when Auth state Change if refrash it will also return same user until you sign out
-    // ⭐ A Observable can have three different states as well : Subscribed, Error, Completed.
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
-      if (userAuth) {
-        //createUserProfileDocument return documentReference
-        const UserRef = await createUserProfileDocument(userAuth);
-
-        UserRef.onSnapshot((snapShot) => {
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data(),
-          });
-        });
-      } else {
-        // if there is not thing in userAuth
-        setCurrentUser(userAuth);
-      }
-    });
+    const { checkUserSession } = this.props;
+    checkUserSession();
   }
+  //   const { setCurrentUser } = this.props;
+  //   // when Auth state Change if refrash it will also return same user until you sign out
+  //   // ⭐ A Observable can have three different states as well : Subscribed, Error, Completed.
+  //   this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+  //     if (userAuth) {
+  //       //createUserProfileDocument return documentReference
+  //       const UserRef = await createUserProfileDocument(userAuth);
+
+  //       UserRef.onSnapshot((snapShot) => {
+  //         setCurrentUser({
+  //           id: snapShot.id,
+  //           ...snapShot.data(),
+  //         });
+  //       });
+  //     } else {
+  //       // if there is not thing in userAuth
+  //       setCurrentUser(userAuth);
+  //     }
+  //   });
+  // }
 
   componentWillUnmount() {
     // #86 to unsubscribe/close auth
@@ -61,6 +63,7 @@ class App extends React.Component {
   // Route render for ()=>() inline function
   // component for component
   render() {
+    console.log(this.props.currentUser);
     return (
       <div>
         <Header />
@@ -92,7 +95,7 @@ const mapStateToProps = createStructuredSelector({
 
 // dispatch is way for redux to know that whatever object you're passing me. it going to be an action object that I'm going to pass to every reducer
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  checkUserSession: () => dispatch(checkUserSession()),
 });
 
 // App.js only set currentUser that we will use mapDispatchToProps
